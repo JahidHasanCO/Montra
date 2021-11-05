@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Montra</string>
     <string name="montra">Montra</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
