@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import dev.jahidhasanco.montra.R
@@ -54,6 +55,10 @@ class OnboardingFragment : Fragment() {
         )
 
         setOnboardingAdapter(onBoardingdata)
+
+        binding.loginBtn.setOnClickListener {
+            it.findNavController().navigate(OnboardingFragmentDirections.actionOnboardingFragmentToLoginFragment())
+        }
     }
 
     private fun setOnboardingAdapter(data: List<OnboardingData>) {

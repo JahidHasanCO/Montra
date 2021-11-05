@@ -6,5 +6,19 @@
     <fragment
         android:id="@+id/onboardingFragment"
         android:name="dev.jahidhasanco.montra.presentation.fragment.Onboarding.OnboardingFragment"
-        android:label="OnboardingFragment" />
+        android:label="OnboardingFragment" >
+        <action
+            android:id="@+id/action_onboardingFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="dev.jahidhasanco.montra.presentation.fragment.auth.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_onboardingFragment"
+            app:destination="@id/onboardingFragment"
+            app:enterAnim="@android:anim/slide_out_right" />
+    </fragment>
 </navigation>
