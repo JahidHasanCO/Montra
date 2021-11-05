@@ -5,6 +5,6 @@
     app:startDestination="@id/onboardingFragment">
     <fragment
         android:id="@+id/onboardingFragment"
-        android:name="dev.jahidhasanco.montra.presentation.fragment.OnboardingFragment"
+        android:name="dev.jahidhasanco.montra.presentation.fragment.Onboarding.OnboardingFragment"
         android:label="OnboardingFragment" />
 </navigation>

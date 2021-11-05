@@ -1,0 +1,65 @@
+package dev.jahidhasanco.montra.presentation.fragment.Onboarding
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
+import dev.jahidhasanco.montra.R
+import dev.jahidhasanco.montra.data.onboarding.OnboardingData
+import dev.jahidhasanco.montra.databinding.FragmentOnboardingBinding
+
+
+class OnboardingFragment : Fragment() {
+
+    private lateinit var binding: FragmentOnboardingBinding
+    lateinit var onBoardingAdapter: OnBoardingAdapter
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        binding = FragmentOnboardingBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val onBoardingdata: MutableList<OnboardingData> = ArrayList()
+        onBoardingdata.add(
+            OnboardingData(
+                "Gain total control of your money",
+                "Become your own money manager and make every cent count",
+                R.drawable.onboarding1
+            )
+        )
+        onBoardingdata.add(
+            OnboardingData(
+                "Know where your money goes",
+                "Track your transaction easily, with categories and financial report",
+                R.drawable.onboarding2
+            )
+        )
+        onBoardingdata.add(
+            OnboardingData(
+                "Planning ahead",
+                "Setup your budget for each category so you in control",
+                R.drawable.onboarding3
+            )
+        )
+
+        setOnboardingAdapter(onBoardingdata)
+    }
+
+    private fun setOnboardingAdapter(data: List<OnboardingData>) {
+        onBoardingAdapter = OnBoardingAdapter(context!!, data)
+        binding.onboardingViewpager.adapter = onBoardingAdapter
+        binding.tabLayout.setupWithViewPager(binding.onboardingViewpager)
+    }
+
+}
