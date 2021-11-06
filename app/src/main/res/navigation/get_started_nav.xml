@@ -28,6 +28,9 @@
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment"
             app:enterAnim="@android:anim/fade_in" />
+        <action
+            android:id="@+id/action_loginFragment_to_forgotPassworfFragment"
+            app:destination="@id/forgotPassworfFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -41,5 +44,13 @@
             android:id="@+id/action_signUpFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:enterAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgotPassworfFragment"
+        android:name="dev.jahidhasanco.montra.presentation.fragment.auth.ForgotPasswordFragment"
+        android:label="ForgotPassworfFragment" >
+        <action
+            android:id="@+id/action_forgotPassworfFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>
