@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary">#7F3DFF</color>
+    <color name="backGround">#161719</color>
+    <color name="backGroundAd">#464A4C</color>
+    <color name="gray">#E0E2E9</color>
+    <color name="transparent">#00E0E2E9</color>
+    <color name="green">#08A373</color>
+    <color name="red">#FD3C4A</color>
+    <color name="blue">#0077FF</color>
+    <color name="brown">#FFF6E5</color>
+    <color name="orange">#FCAC12</color>
+    <color name="mainText">#F2F4F5</color>
+    <color name="textAd">#91919F</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+</resources>

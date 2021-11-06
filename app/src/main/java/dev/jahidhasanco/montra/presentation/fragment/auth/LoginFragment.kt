@@ -28,6 +28,10 @@ class LoginFragment : Fragment() {
             it.findNavController()
                 .navigate(LoginFragmentDirections.actionLoginFragmentToOnboardingFragment())
         }
+
+        binding.signUp.setOnClickListener {
+            it.findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment())
+        }
     }
 
 }
