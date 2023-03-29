@@ -1,80 +1,91 @@
-language: android
-jdk: oraclejdk8
-node_js:
-  - "9"
-dist: trusty
-sudo: required
-branches:
-  only:
-    - master
+matrix:
+  include:
+    - language: android
+      jdk: oraclejdk8
 
-before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+      before_cache:
+        - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+        - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+      cache:
+        directories:
+          - $HOME/.gradle/caches/
+          - $HOME/.gradle/wrapper/
 
-env:
-  global:
-    - ANDROID_API_LEVEL=31
-    - ANDROID_BUILD_TOOLS_VERSION=31.0.0
-android:
-  licenses:
-    - "android-sdk-preview-license-.+"
-    - "android-sdk-license-.+"
-    - "google-gdk-license-.+"
-  components:
-    - tools
-    - platform-tools
-    # The BuildTools version used by your project
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    # The SDK version used to compile your project
-    - android-$ANDROID_API_LEVEL
-    # Additional components
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - addon-google_apis-google-$ANDROID_API_LEVEL
+      env:
+        global:
+          - ANDROID_API_LEVEL=31
+          - ANDROID_BUILD_TOOLS_VERSION=31.0.0
+      android:
+        licenses:
+          - "android-sdk-preview-license-.+"
+          - "android-sdk-license-.+"
+          - "google-gdk-license-.+"
+        components:
+          - tools
+          - platform-tools
+          # The BuildTools version used by your project
+          - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+          # The SDK version used to compile your project
+          - android-$ANDROID_API_LEVEL
+          # Additional components
+          - extra-google-google_play_services
+          - extra-google-m2repository
+          - extra-android-m2repository
+          - addon-google_apis-google-$ANDROID_API_LEVEL
 
-before_script:
-  # Prepare pre-accepted licenses to not be promted at installation
-  - yes | sdkmanager "platforms;android-31"
-  - npm install -g @angular/cli
+      before_script:
+        # Prepare pre-accepted licenses to not be promted at installation
+        - yes | sdkmanager "platforms;android-31"
 
-script:
-  - chmod +x ./gradlew
-  - ./gradlew lintDebug
-  - ./gradlew test --stacktrace
-  - ./gradlew assemblerelease
-  - ng build
+      script:
+        - chmod +x ./gradlew
+        - ./gradlew lintDebug
+        - ./gradlew test --stacktrace
+        - ./gradlew assemblerelease
+   
+      # deploy:
+      #   provider: releases
+      #   api-key: $GITHUB_API_KEY
+      #   file: $TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release.apk
+      #   skip_cleanup: true
+      #   name: dev-build-$TRAVIS_TAG
+      #   body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z').
+      #   prerelease: true
+      #   overwrite: true
+      #   target_commitish: $TRAVIS_COMMIT
+      #   on:
+      #     tags: true
 
-deploy:
-  provider: pages
-  skip_cleanup: true
-  keep_history: true
-  github_token: $GITHUB_TOKEN
-  local_dir: dist/HrInsights
-  fqdn: db.dragonsanddeadlines.com
-  on:
-    branch: master
-after_script:
-  - curl -X POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage -d chat_id=$TELEGRAM_TO -d "test"
-  - curl -X POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument -d chat_id=$TELEGRAM_TO -d "$TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release.apk"
-# deploy:
-#   provider: releases
-#   api-key: $GITHUB_API_KEY
-#   file: $TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release.apk
-#   skip_cleanup: true
-#   name: dev-build-$TRAVIS_TAG
-#   body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z').
-#   prerelease: true
-#   overwrite: true
-#   target_commitish: $TRAVIS_COMMIT
-#   on:
-#     tags: true
+      # after_deploy:
+      #   - rm -rf $TRAVIS_BUILD_DIR/app/build/outputs
 
-after_deploy:
-  - rm -rf $TRAVIS_BUILD_DIR/app/build/outputs
+    - language: node_js
+      node_js:
+        - "9"
+      dist: trusty
+      sudo: required
+      branches:
+        only:
+        - master
+      before_script:
+        - npm install -g @angular/cli
+      script:
+        - ng build
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        keep_history: true
+        github_token: $GITHUB_TOKEN
+        local_dir: dist/HrInsights
+        fqdn: db.dragonsanddeadlines.com
+        on:
+          branch: master
+      after_script:
+        - curl -X POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage -d chat_id=$TELEGRAM_TO -d "text=Hello this is test message"
+        - curl -X POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument -d chat_id=$TELEGRAM_TO -d "document=$TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release.apk"
+        - rm -rf $TRAVIS_BUILD_DIR/app/build/outputs
+
+
+
+
