@@ -1,14 +1,21 @@
 language: android
 jdk: oraclejdk8
+node_js:
+  - "9"
+dist: trusty
+sudo: required
+branches:
+  only:
+    - master
 
 before_cache:
- - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
- - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
- directories:
- - $HOME/.gradle/caches/
- - $HOME/.gradle/wrapper/
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
 env:
   global:
@@ -17,9 +24,9 @@ env:
     - ANDROID_BUILD_TOOLS_VERSION=31.0.0
 android:
   licenses:
-    - 'android-sdk-preview-license-.+'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
+    - "android-sdk-preview-license-.+"
+    - "android-sdk-license-.+"
+    - "google-gdk-license-.+"
   components:
     - tools
     - platform-tools
@@ -35,34 +42,34 @@ android:
     - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
     - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API
 
-before_install:
-- openssl aes-256-cbc -K $encrypted_c0801aa05af4_key -iv $encrypted_c0801aa05af4_iv -in example_keystore.jks.enc -out example_keystore.jks -d
-- mkdir "$ANDROID_HOME/licenses" || true
-- echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
-- echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-- chmod +x gradlew
-- ./gradlew dependencies || true # DON'T ADD unless you are getting "Install missing components using SDK manager"
-#Source: https://medium.com/@oldergod/constraint-layout-and-circleci-travis-d50342696d2
-
-
 before_script:
   # Prepare pre-accepted licenses to not be promted at installation
   - yes | sdkmanager "platforms;android-31"
-  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-29 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
+  - npm install -g @angular/cli
 
 script:
   - chmod +x ./gradlew
   - ./gradlew lintDebug
-  - ./gradlew test
-  - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
+  - ./gradlew test --stacktrace
+  - ./gradlew clean build connectedCheck -PdisablePreDex --stacktrace
   - ./gradlew assemblerelease
+  - ng build
 
-
-
-
+deploy:
+  provider: pages
+  skip_cleanup: true
+  keep_history: true
+  github_token: $GITHUB_TOKEN
+  local_dir: dist/HrInsights
+  fqdn: db.dragonsanddeadlines.com
+  on:
+    branch: master
+after_script:
+  - curl -X POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage -d chat_id=$TELEGRAM_TO -d "test"
 # deploy:
 #   provider: releases
 #   api-key: $GITHUB_API_KEY
