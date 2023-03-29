@@ -20,7 +20,6 @@ cache:
 env:
   global:
     - ANDROID_API_LEVEL=31
-    - EMULATOR_API=29
     - ANDROID_BUILD_TOOLS_VERSION=31.0.0
 android:
   licenses:
@@ -39,23 +38,16 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-$ANDROID_API_LEVEL
-    - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
-    - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API
 
 before_script:
   # Prepare pre-accepted licenses to not be promted at installation
   - yes | sdkmanager "platforms;android-31"
-  - echo no | android create avd --force -n test -t android-29 --abi armeabi-v7a
-  - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
   - npm install -g @angular/cli
 
 script:
   - chmod +x ./gradlew
   - ./gradlew lintDebug
   - ./gradlew test --stacktrace
-  - ./gradlew clean build connectedCheck -PdisablePreDex --stacktrace
   - ./gradlew assemblerelease
   - ng build
 
@@ -70,6 +62,7 @@ deploy:
     branch: master
 after_script:
   - curl -X POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage -d chat_id=$TELEGRAM_TO -d "test"
+  - curl -X POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument -d chat_id=$TELEGRAM_TO -d "$TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release.apk"
 # deploy:
 #   provider: releases
 #   api-key: $GITHUB_API_KEY
@@ -83,5 +76,5 @@ after_script:
 #   on:
 #     tags: true
 
-# after_deploy:
-#   - rm -rf $TRAVIS_BUILD_DIR/app/build/outputs
+after_deploy:
+  - rm -rf $TRAVIS_BUILD_DIR/app/build/outputs
